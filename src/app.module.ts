@@ -19,6 +19,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       },
     }),
     CacheModule.register<RedisClientOptions>({
+      store: redisStore,
       // Used for Access Tokens - matches TTL of HubSpot access tokens
       ttl: 30 * 6000,
       isGlobal: true,

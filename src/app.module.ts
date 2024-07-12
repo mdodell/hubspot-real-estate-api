@@ -9,7 +9,6 @@ import { CacheModule } from '@nestjs/cache-manager';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env.development',
     }),
     HttpModule.register({
       baseURL: 'https://api.hubapi.com/oauth/v1/token',

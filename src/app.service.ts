@@ -1,7 +1,17 @@
 import { HttpService } from '@nestjs/axios';
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+
+import { Cache } from 'cache-manager';
 import { AxiosError } from 'axios';
+
 import { HandshakeDTO } from './dtos/oauth/access-token.dto';
 
 @Injectable()
@@ -11,6 +21,7 @@ export class AppService {
   constructor(
     private readonly httpService: HttpService,
     private configService: ConfigService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async installApp(code: string) {
@@ -41,6 +52,9 @@ export class AppService {
       });
 
     this.logger.log(data);
+    // Store the access token in the cache for 30 minutes
+    await this.cacheManager.set('accessToken', data.access_token);
+
     return data;
   }
 }

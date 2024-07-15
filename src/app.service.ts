@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import {
   HttpException,
   HttpStatus,
@@ -7,22 +6,43 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Client } from '@hubspot/api-client';
+
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-
 import { Cache } from 'cache-manager';
-import { AxiosError } from 'axios';
 
-import { HandshakeDTO } from './dtos/oauth/access-token.dto';
+import { RefreshTokensService } from './refresh-tokens/refresh-tokens.service';
 
 @Injectable()
 export class AppService {
   private readonly logger = new Logger(AppService.name);
+  private readonly hubspotClient = new Client();
 
   constructor(
-    private readonly httpService: HttpService,
     private configService: ConfigService,
+    private refreshTokensService: RefreshTokensService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  async getTokens(code: string) {
+    const data = await this.hubspotClient.oauth.tokensApi.create(
+      'authorization_code',
+      code,
+      this.configService.get('REDIRECT_URI'),
+      this.configService.get('CLIENT_ID'),
+      this.configService.get('CLIENT_SECRET'),
+    );
+
+    return data;
+  }
+
+  async getTokenInfo(accessToken: string) {
+    // Get the information for the access token
+    const tokenInfo =
+      await this.hubspotClient.oauth.accessTokensApi.get(accessToken);
+
+    return tokenInfo;
+  }
 
   async installApp(code: string) {
     this.logger.log(`Attempting to make an oauth handshake with code: ${code}`);
@@ -33,28 +53,21 @@ export class AppService {
       );
     }
 
-    const params = {
-      grant_type: 'authorization_code',
-      client_id: this.configService.get('CLIENT_ID'),
-      client_secret: this.configService.get('CLIENT_SECRET'),
-      redirect_uri: this.configService.get('REDIRECT_URI'),
-      code,
-    };
+    const data = await this.getTokens(code);
 
-    const { data } = await this.httpService.axiosRef
-      .post<HandshakeDTO>('', params)
-      .catch((error: AxiosError) => {
-        const errorMessage = error.response.data;
-        this.logger.error(
-          `There was an error getting an access token for the app: ${errorMessage}`,
-        );
-        throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
-      });
+    const tokenInfo = await this.getTokenInfo(data.accessToken);
 
-    this.logger.log(data);
-    // Store the access token in the cache for 30 minutes
-    await this.cacheManager.set('accessToken', data.access_token);
+    // Store the access token in the cache for 30 minutes, cached by user ID
+    await this.cacheManager.set(
+      `${tokenInfo.userId}-accessToken`,
+      data.accessToken,
+    );
 
-    return data;
+    await this.refreshTokensService.createRefreshToken({
+      token: data.refreshToken,
+      portalId: tokenInfo.hubId,
+    });
+
+    return data.accessToken;
   }
 }

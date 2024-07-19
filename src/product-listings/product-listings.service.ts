@@ -17,17 +17,18 @@ export class ProductListingsService {
     const inputs: Array<SimplePublicObjectInputForCreate> = [
       ...new Array(numZip),
     ]
-      .map(() => faker.location.zipCode())
+      .map(() => faker.location.zipCode('#####'))
       .flatMap((zip) =>
         [...new Array(numHousePerZip)].map(() => ({
           properties: {
+            name: `${faker.commerce.productName()} House`,
             address: faker.location.streetAddress(),
-            imageUrl: faker.image.urlLoremFlickr({
+            hs_images: faker.image.urlLoremFlickr({
               category: 'house',
             }),
-            price: faker.commerce.price({ min: 50000 }),
+            price: faker.commerce.price({ min: 50000, max: 1000000 }),
             description: faker.commerce.productAdjective() + ' House!',
-            zip: zip,
+            zip,
           },
           associations: [],
         })),
@@ -35,8 +36,14 @@ export class ProductListingsService {
 
     this.logger.log('Inject Listing Inputs');
     this.logger.log(inputs);
-    let result = await hubspotClient.crm.products.batchApi.create({ inputs });
-    this.logger.log('Inject Listing Result');
-    this.logger.log(result);
+    try {
+      const result = await hubspotClient.crm.products.batchApi.create({
+        inputs,
+      });
+      this.logger.log('Inject Listing Result');
+      this.logger.log(result);
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

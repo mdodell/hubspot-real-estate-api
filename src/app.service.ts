@@ -32,7 +32,6 @@ export class AppService {
       this.configService.get('CLIENT_ID'),
       this.configService.get('CLIENT_SECRET'),
     );
-
     return data;
   }
 

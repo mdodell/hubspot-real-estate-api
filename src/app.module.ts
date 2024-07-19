@@ -8,6 +8,8 @@ import { RefreshTokensService } from './refresh-tokens/refresh-tokens.service';
 import { PrismaService } from './prisma.service';
 import { CacheModule } from '@nestjs/cache-manager';
 import { EncryptionService } from './encryption/encryption.service';
+import { ProductListingsService } from './product-listings/product-listings.service';
+import { ProductListingsController } from './product-listings/product-listings.controller';
 
 @Module({
   imports: [
@@ -21,12 +23,13 @@ import { EncryptionService } from './encryption/encryption.service';
       port: process.env.REDIS_PORT,
     }),
   ],
-  controllers: [AppController],
+  controllers: [AppController, ProductListingsController],
   providers: [
     AppService,
     RefreshTokensService,
     PrismaService,
     EncryptionService,
+    ProductListingsService,
   ],
 })
 export class AppModule {}

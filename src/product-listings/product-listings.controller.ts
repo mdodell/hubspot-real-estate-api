@@ -7,9 +7,6 @@ export class ProductListingsController {
 
   @Get('/')
   injectListings() {
-    return 'hey';
-    // this.productListingService.injectListings(
-    //   'CMrujOKMMhIEAAECQBjhu5sWIKmOhwwogPDZATIUcD5tkAyuX9Zl-kosusPJn_MG2yA6MAAAAEEAAAAAAPgDAAAAAAAAgAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAAAAAkIU7LUtdvztRQXxnF_LxwMO5hfPxS1KA25hMVIAWgBgAA',
-    // );
+    this.productListingService.injectListings('ACCESS TOKEN HERE');
   }
 }

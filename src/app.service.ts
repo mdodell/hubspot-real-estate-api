@@ -31,7 +31,8 @@ export class AppService {
       this.configService.get('REDIRECT_URI'),
       this.configService.get('CLIENT_ID'),
       this.configService.get('CLIENT_SECRET'),
-    );
+    )
+    this.logger.log(`getTokensResult: ${JSON.stringify(data)}`);
     return data;
   }
 
@@ -56,9 +57,9 @@ export class AppService {
 
     const tokenInfo = await this.getTokenInfo(data.accessToken);
 
-    // Store the access token in the cache for 30 minutes, cached by user ID
+    // Store the access token in the cache for 30 minutes, cached by hub ID
     await this.cacheManager.set(
-      `${tokenInfo.userId}-accessToken`,
+      `${tokenInfo.hubId}-accessToken`,
       data.accessToken,
     );
 

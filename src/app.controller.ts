@@ -17,7 +17,7 @@ export class AppController {
   oauthCallback(@Query('code') code: string) {
     this.appService.installApp(code).then((accessToken) => {
       console.log(accessToken);
-      this.productListingService.injectListings(accessToken);
+      //this.productListingService.injectListings(accessToken);
     });
   }
 }

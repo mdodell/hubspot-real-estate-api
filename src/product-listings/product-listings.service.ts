@@ -46,4 +46,36 @@ export class ProductListingsService {
       console.log(e);
     }
   }
+
+  async getListings(accessToken: string) {
+    const hubspotClient = new Client({ accessToken });
+    try {
+      const result = (
+        await hubspotClient.crm.products.basicApi.getPage(100, undefined, [
+          'name',
+          'price',
+          'zip',
+          'address',
+          'hs_images',
+          'description',
+        ])
+      ).results;
+      return result.map((product) => ({
+        name: product.properties.name,
+        price: product.properties.price,
+        zip: product.properties.zip,
+        address: product.properties.address,
+        imageUrl: product.properties.hs_images,
+        description: product.properties.description,
+      }));
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async getListingsForZip(accessToken: string, zip: string) {
+    return (await this.getListings(accessToken)).filter(
+      (product) => product.zip === zip,
+    );
+  }
 }

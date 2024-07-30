@@ -1,9 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Client } from '@hubspot/api-client';
-import {
-  BatchInputSimplePublicObjectInputForCreate,
-  SimplePublicObjectInputForCreate,
-} from '@hubspot/api-client/lib/codegen/crm/companies';
+import { SimplePublicObjectInputForCreate } from '@hubspot/api-client/lib/codegen/crm/companies';
 import { faker } from '@faker-js/faker';
 
 @Injectable()

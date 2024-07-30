@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -10,6 +15,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { EncryptionService } from './encryption/encryption.service';
 import { ProductListingsService } from './product-listings/product-listings.service';
 import { ProductListingsController } from './product-listings/product-listings.controller';
+import { HubspotSignatureVerificationMiddleware } from './hubspot-signature-verification/hubspot-signature-verification.middleware';
 
 @Module({
   imports: [
@@ -32,4 +38,11 @@ import { ProductListingsController } from './product-listings/product-listings.c
     ProductListingsService,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(HubspotSignatureVerificationMiddleware).forRoutes({
+      path: 'product-listings*',
+      method: RequestMethod.ALL,
+    });
+  }
+}

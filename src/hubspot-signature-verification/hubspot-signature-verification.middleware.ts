@@ -10,8 +10,8 @@ export class HubspotSignatureVerificationMiddleware implements NestMiddleware {
     this.logger.log(
       `HELLO FROM ${HubspotSignatureVerificationMiddleware.name}`,
     );
-    this.logger.log(`Request: ${req}`);
-    this.logger.log(`Res: ${res}`);
+    this.logger.log(`Request: ${JSON.stringify(req)}`);
+    this.logger.log(`Res: ${JSON.stringify(res)}`);
     const headers = req.headers;
     const hostName = headers['host'];
     const protocol = headers['x-forwarded-proto'];

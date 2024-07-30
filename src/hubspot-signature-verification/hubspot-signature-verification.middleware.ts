@@ -6,7 +6,7 @@ export class HubspotSignatureVerificationMiddleware implements NestMiddleware {
   private readonly logger = new Logger(
     HubspotSignatureVerificationMiddleware.name,
   );
-  use(req: Request, res: Response, next: () => void) {
+  use(req: Request, __: Response, next: () => void) {
     this.logger.log(
       `HELLO FROM ${HubspotSignatureVerificationMiddleware.name}`,
     );
@@ -23,21 +23,16 @@ export class HubspotSignatureVerificationMiddleware implements NestMiddleware {
     const timestamp = Number(timestampHeader);
     const reqURL = new URL(path, base);
     const url = reqURL.href;
-    const bodyString = JSON.stringify(req.body);
-    this.logger.log(
-      `Validations: ${url}, ${method}, ${signature}, ${clientSecret}, ${bodyString}`,
-    );
-    this.logger.log(`Headers: ${JSON.stringify(headers)}`);
+    const bodyString = method === 'GET' ? '' : JSON.stringify(req.body);
     const result = Signature.isValid({
       url,
       method,
       signature,
       clientSecret,
       timestamp,
-      requestBody: '',
+      requestBody: bodyString,
       signatureVersion: 'v3',
     });
-    console.log('result', result);
     if (!result) {
       throw new Error('Could not verify the HubSot v3 Signature');
     }

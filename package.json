@@ -18,10 +18,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "generate:dev": "npx prisma generate dev",
     "migrate:dev": "npx prisma migrate dev",
     "studio:dev": "npx prisma studio"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@hubspot/api-client": "^11.1.0",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/cache-manager": "^2.2.2",
@@ -35,6 +37,7 @@
     "cache-manager": "^5.7.2",
     "cache-manager-redis-store": "^2.0.0",
     "dotenv-cli": "^7.4.2",
+    "nest": "^0.1.6",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },

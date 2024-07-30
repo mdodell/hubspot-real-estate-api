@@ -32,9 +32,7 @@ export class AppService {
       this.configService.get('CLIENT_ID'),
       this.configService.get('CLIENT_SECRET'),
     );
-
     this.logger.log(`getTokensResult: ${JSON.stringify(data)}`);
-
     return data;
   }
 

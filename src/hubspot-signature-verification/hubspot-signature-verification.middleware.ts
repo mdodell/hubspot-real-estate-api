@@ -1,9 +1,17 @@
 import { Signature } from '@hubspot/api-client';
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 
 @Injectable()
 export class HubspotSignatureVerificationMiddleware implements NestMiddleware {
+  private readonly logger = new Logger(
+    HubspotSignatureVerificationMiddleware.name,
+  );
   use(req: Request, res: Response, next: () => void) {
+    this.logger.log(
+      `HELLO FROM ${HubspotSignatureVerificationMiddleware.name}`,
+    );
+    this.logger.log(`Request: ${req}`);
+    this.logger.log(`Res: ${res}`);
     const headers = req.headers;
     const hostName = headers['host'];
     const protocol = headers['x-forwarded-proto'];

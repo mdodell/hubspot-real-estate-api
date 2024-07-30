@@ -10,8 +10,6 @@ export class HubspotSignatureVerificationMiddleware implements NestMiddleware {
     this.logger.log(
       `HELLO FROM ${HubspotSignatureVerificationMiddleware.name}`,
     );
-    this.logger.log(`Request: ${JSON.stringify(req)}`);
-    this.logger.log(`Res: ${JSON.stringify(res)}`);
     const headers = req.headers;
     const hostName = headers['host'];
     const protocol = headers['x-forwarded-proto'];
@@ -26,6 +24,10 @@ export class HubspotSignatureVerificationMiddleware implements NestMiddleware {
     const reqURL = new URL(path, base);
     const url = reqURL.href;
     const bodyString = req.body.toString();
+    this.logger.log(
+      `Validations: ${url}, ${method}, ${signature}, ${clientSecret}, ${bodyString}`,
+    );
+    this.logger.log(`Headers: ${JSON.stringify(headers)}`);
     const result = Signature.isValid({
       url,
       method,

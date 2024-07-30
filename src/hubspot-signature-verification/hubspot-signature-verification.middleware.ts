@@ -34,7 +34,7 @@ export class HubspotSignatureVerificationMiddleware implements NestMiddleware {
       signature,
       clientSecret,
       timestamp,
-      requestBody: bodyString,
+      requestBody: '',
       signatureVersion: 'v3',
     });
     console.log('result', result);

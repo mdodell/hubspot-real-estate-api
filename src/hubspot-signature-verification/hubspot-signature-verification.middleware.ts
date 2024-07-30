@@ -23,7 +23,7 @@ export class HubspotSignatureVerificationMiddleware implements NestMiddleware {
     const timestamp = Number(timestampHeader);
     const reqURL = new URL(path, base);
     const url = reqURL.href;
-    const bodyString = req.body.toString();
+    const bodyString = JSON.stringify(req.body);
     this.logger.log(
       `Validations: ${url}, ${method}, ${signature}, ${clientSecret}, ${bodyString}`,
     );

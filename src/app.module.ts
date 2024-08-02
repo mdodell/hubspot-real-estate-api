@@ -16,6 +16,7 @@ import { EncryptionService } from './encryption/encryption.service';
 import { ProductListingsService } from './product-listings/product-listings.service';
 import { ProductListingsController } from './product-listings/product-listings.controller';
 import { HubspotSignatureVerificationMiddleware } from './hubspot-signature-verification/hubspot-signature-verification.middleware';
+import { AccessTokensService } from './access-tokens/access-tokens.service';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { HubspotSignatureVerificationMiddleware } from './hubspot-signature-veri
     PrismaService,
     EncryptionService,
     ProductListingsService,
+    AccessTokensService,
   ],
 })
 export class AppModule implements NestModule {

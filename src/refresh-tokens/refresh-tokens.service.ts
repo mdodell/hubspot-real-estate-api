@@ -23,4 +23,18 @@ export class RefreshTokensService {
       update: { ...data },
     });
   }
+
+  async getRefreshToken(portalId: number) {
+    this.logger.log(`Get Refresh Token: portalId~${portalId}`);
+    return await this.prisma.refreshToken
+      .findFirst({
+        where: { portalId: portalId },
+      })
+      .then((refreshTokenEntry) => {
+        this.logger.log(
+          `Get Refresh Token finished: encrypted token~${refreshTokenEntry.token}`,
+        );
+        return this.encryptionService.decrypt(refreshTokenEntry.token);
+      });
+  }
 }

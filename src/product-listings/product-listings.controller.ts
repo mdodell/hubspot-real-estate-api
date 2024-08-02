@@ -9,12 +9,14 @@ import {
 import { ProductListingsService } from './product-listings.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { AccessTokensService } from 'src/access-tokens/access-tokens.service';
 
 @Controller('product-listings')
 export class ProductListingsController {
   private readonly logger = new Logger(ProductListingsController.name);
   constructor(
     private readonly productListingService: ProductListingsService,
+    private readonly accessTokensService: AccessTokensService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -35,20 +37,19 @@ export class ProductListingsController {
   async getListingsForZip(
     @Request() request: Request,
     @Query('zip') zip: string,
-    @Query('portalId') portalId,
+    @Query('portalId') portalId: string,
   ) {
-    this.logger.log('REQUEST');
-    this.logger.log(request.toString());
-    const accessToken = await this.cacheManager.get<string>(
-      `${portalId}-accessToken`,
+    this.logger.log(`Get Listings For Zip: ${request.toString()}`);
+    const accessToken = await this.accessTokensService.getAccessToken(
+      parseInt(portalId),
     );
 
-    this.logger.log(`Access Token: ${accessToken}`);
+    this.logger.log(`Get Listings For Zip Access Token: ${accessToken}`);
     const result = await this.productListingService.getListingsForZip(
       accessToken,
       zip,
     );
-    console.log(`Fetched ${result.length} product listings for zip ${zip}`);
+    this.logger.log(`Fetched ${result.length} product listings for zip ${zip}`);
     return result;
   }
 }

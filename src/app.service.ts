@@ -1,17 +1,9 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client } from '@hubspot/api-client';
 
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
-
 import { RefreshTokensService } from './refresh-tokens/refresh-tokens.service';
+import { AccessTokensService } from './access-tokens/access-tokens.service';
 
 @Injectable()
 export class AppService {
@@ -21,7 +13,7 @@ export class AppService {
   constructor(
     private configService: ConfigService,
     private refreshTokensService: RefreshTokensService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private accessTokensService: AccessTokensService,
   ) {}
 
   async getTokens(code: string) {
@@ -58,8 +50,8 @@ export class AppService {
     const tokenInfo = await this.getTokenInfo(data.accessToken);
 
     // Store the access token in the cache for 30 minutes, cached by hub ID
-    await this.cacheManager.set(
-      `${tokenInfo.hubId}-accessToken`,
+    await this.accessTokensService.setAccessToken(
+      tokenInfo.hubId,
       data.accessToken,
     );
 

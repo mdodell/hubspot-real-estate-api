@@ -18,13 +18,9 @@ export class AccessTokensService {
 
   async getAccessToken(portalId: number) {
     this.logger.log(`Get Access Token: portalId~${portalId}`);
-    /*
-    TODO: uncomment this out once this.refreshAccessToken works
     const accessTokenMaybe = await this.cacheManager.get<string>(
       `${portalId}-accessToken`,
     );
-    */
-    const accessTokenMaybe = null;
     if (accessTokenMaybe) {
       this.logger.log(
         `Get Access Token found: accessToken~${accessTokenMaybe}`,

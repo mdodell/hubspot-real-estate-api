@@ -20,7 +20,10 @@ export class RefreshTokensService {
         ...data,
         token: encryptedKey,
       },
-      update: { ...data },
+      update: {
+        ...data,
+        token: encryptedKey,
+      },
     });
   }
 

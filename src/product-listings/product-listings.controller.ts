@@ -49,7 +49,7 @@ export class ProductListingsController {
       accessToken,
       zip,
     );
-    console.log(`Fetched ${result.length} product listings for zip ${zip}`);
+    this.logger.log(`Fetched ${result.length} product listings for zip ${zip}`);
     return result;
   }
 }

@@ -17,6 +17,10 @@ export class AppService {
   ) {}
 
   async getTokens(code: string) {
+    this.logger.log(`getTokens:
+        'REDIRECT_URI' ${this.configService.get('REDIRECT_URI')},
+      'CLIENT_SECRET' ${this.configService.get('CLIENT_SECRET')},
+      'CLIENT_ID' ${this.configService.get('CLIENT_ID')}`);
     const data = await this.hubspotClient.oauth.tokensApi.create(
       'authorization_code',
       code,
